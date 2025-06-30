@@ -1,13 +1,39 @@
-import { _decorator, Component, AudioSource, find } from 'cc';
+import {
+    _decorator,
+    AnimationClip,
+    AudioClip,
+    AudioSource,
+    BoxCollider,
+    Camera,
+    Component,
+    geometry,
+    Input,
+    input,
+    instantiate,
+    Material,
+    math,
+    MeshRenderer,
+    Node,
+    PhysicsSystem,
+    Prefab,
+    SkeletalAnimation,
+    sys,
+    Tween,
+    tween,
+    v3,
+    Vec3
+} from 'cc';
 
-declare const super_html_playable: any;
 
-const { ccclass } = _decorator;
+import { super_html_playable } from './super_html_playable';
+
+const {ccclass} = _decorator;
 
 @ccclass('CTAButtonHandler')
 export class CTAButtonHandler extends Component {
 
     private adHandler: any = null;
+    super_html_playable: super_html_playable = new super_html_playable();
 
     onLoad() {
         if (typeof super_html_playable !== 'undefined') {
@@ -21,18 +47,22 @@ export class CTAButtonHandler extends Component {
     public onStoreButtonClicked(): void {
         console.log("Store button clicked!");
 
-        const mainAudio = find("Canvas-001/GameCamera")?.getComponent(AudioSource);
-        if (mainAudio) {
-            mainAudio.stop();
+
+        if (sys.os === sys.OS.ANDROID) {
+            window.open("https://play.google.com/store/apps/details?id=com.game.goolny.stickers", "Merge Sticker Playbook 2D");
+        } else if (sys.os === sys.OS.IOS) {
+            window.open("https://apps.apple.com/us/app/merge-sticker-playbook-2d/id6505066374", "Merge Sticker Playbook 2D");
+        } else {
+            window.open("https://play.google.com/store/apps/details?id=com.game.goolny.stickers", "Merge Sticker Playbook 2D");
         }
+        this.super_html_playable.download();
+        // const mainAudio = find("Canvas-001/GameCamera")?.getComponent(AudioSource);
+        // if (mainAudio) {
+        //     mainAudio.stop();
+        // }
+
         
-        if (this.adHandler && typeof this.adHandler.download === 'function') {
-            console.log("Calling ad network's download() function...");
-            this.adHandler.download();
-        } 
-        else {
-            console.log("FALLBACK: Opening a default store URL with window.open()");
-            window.open("https://play.google.com/store/apps/details?id=com.game.goolny.stickers", "_blank");
-        }
+       
+
     }
 }

@@ -1,8 +1,29 @@
-import { _decorator, Component, Node, instantiate, Prefab, Vec3, UITransform, Label, ProgressBar, director, CCFloat, CCInteger, tween, v3, Sprite, Tween, AudioSource, VideoPlayer } from 'cc';
-import { CatController } from './CatController';
-import { TutorialController } from './TutorialController';
+import {
+    _decorator,
+    Component,
+    Node,
+    instantiate,
+    Prefab,
+    Vec3,
+    UITransform,
+    Label,
+    ProgressBar,
+    director,
+    CCFloat,
+    CCInteger,
+    tween,
+    v3,
+    Sprite,
+    Tween,
+    AudioSource,
+    VideoPlayer
+} from 'cc';
+import {CatController} from './CatController';
+import {TutorialController} from './TutorialController';
 
-const { ccclass, property } = _decorator;
+
+const {ccclass, property} = _decorator;
+
 
 @ccclass('GameManager')
 export class GameManager extends Component {
@@ -12,38 +33,38 @@ export class GameManager extends Component {
     @property(Label) public timerLabel: Label | null = null;
     @property(ProgressBar) public mergeProgressBar: ProgressBar | null = null;
     @property(Node) public ctaCanvas: Node | null = null;
-    @property({ type: Node, tooltip: "The 'Drag to Match' text shown at the start." })
+    @property({type: Node, tooltip: "The 'Drag to Match' text shown at the start."})
     public dragToMatchText: Node | null = null;
-    @property({ type: Label, tooltip: "The label for showing 'Awesome!' or 'Try Again!'." })
+    @property({type: Label, tooltip: "The label for showing 'Awesome!' or 'Try Again!'."})
     public endGameStatusLabel: Label | null = null;
-    @property({ type: Node, tooltip: "The semi-transparent overlay shown at the end of the game."})
+    @property({type: Node, tooltip: "The semi-transparent overlay shown at the end of the game."})
     public endGameOverlay: Node | null = null;
-    @property({ type: Prefab, tooltip: "The particle effect for successful merges."})
+    @property({type: Prefab, tooltip: "The particle effect for successful merges."})
     public starParticlePrefab: Prefab | null = null;
-    @property({ type: Node, tooltip: "The black-and-white background sprite." })
+    @property({type: Node, tooltip: "The black-and-white background sprite."})
     public bwBackground: Node | null = null;
-    @property({ type: Node, tooltip: "The node with the Mask component revealing the color background." })
+    @property({type: Node, tooltip: "The node with the Mask component revealing the color background."})
     public colorRevealMask: Node | null = null;
-    @property({ type: Node, tooltip: "The visual wave sprite node that moves down the screen." })
+    @property({type: Node, tooltip: "The visual wave sprite node that moves down the screen."})
     public revealWave: Node | null = null;
-    @property({ type: TutorialController, tooltip: "The controller for the tutorial hand animation." })
+    @property({type: TutorialController, tooltip: "The controller for the tutorial hand animation."})
     public tutorialController: TutorialController | null = null;
-    @property({ type: Node, tooltip: "The semi-transparent overlay that darkens the screen for the tutorial." })
+    @property({type: Node, tooltip: "The semi-transparent overlay that darkens the screen for the tutorial."})
     public tutorialSpotlightOverlay: Node | null = null;
-    @property({ type: Node, tooltip: "The background glow for the first tutorial cat." })
+    @property({type: Node, tooltip: "The background glow for the first tutorial cat."})
     private spotlightGlow1: Node | null = null;
-    @property({ type: Node, tooltip: "The background glow for the second tutorial cat." })
+    @property({type: Node, tooltip: "The background glow for the second tutorial cat."})
     private spotlightGlow2: Node | null = null;
-    @property({ type: VideoPlayer, tooltip: "The video player for the win confetti."})
+    @property({type: VideoPlayer, tooltip: "The video player for the win confetti."})
     public confettiPlayer: VideoPlayer | null = null;
-    @property({ type: Node, tooltip: "The sprite node for the sad emoji on loss."})
+    @property({type: Node, tooltip: "The sprite node for the sad emoji on loss."})
     public sadEmoji: Node | null = null;
-    @property({ type: Prefab, tooltip: "The particle effect for the crying emoji's tears."})
+    @property({type: Prefab, tooltip: "The particle effect for the crying emoji's tears."})
     public tearParticlePrefab: Prefab | null = null;
     @property(CCFloat) public gameDuration: number = 60;
     @property(CCInteger) public totalMergeTypes: number = 7;
     @property(CCFloat) public revealDuration: number = 3.0;
-    @property({ type: CCFloat, tooltip: "Time in seconds of player inactivity before showing a hint." })
+    @property({type: CCFloat, tooltip: "Time in seconds of player inactivity before showing a hint."})
     public idleHintDelay: number = 3.0;
 
     // --- Internal State ---
@@ -62,6 +83,9 @@ export class GameManager extends Component {
     private originalEndNodeParent: Node | null = null;
     private originalStartNodePos: Vec3 = v3();
     private originalEndNodePos: Vec3 = v3();
+
+
+
 
     start() {
         this.audioSource = this.getComponent(AudioSource);
@@ -97,14 +121,16 @@ export class GameManager extends Component {
         if (this.mergeProgressBar) this.mergeProgressBar.progress = 0;
         if (this.timerLabel) this.timerLabel.string = `${this.gameDuration}`;
         if (this.endGameOverlay) this.endGameOverlay.active = false;
-        
+
         if (this.dragToMatchText) {
             if (this.bounceTween) this.bounceTween.stop();
             Tween.stopAllByTarget(this.dragToMatchText);
             this.dragToMatchText.setScale(v3(0, 0, 0));
             this.dragToMatchText.active = true;
-            this.bounceTween = tween(this.dragToMatchText).to(0.7, { scale: v3(1.1, 1.1, 1.1) }, { easing: 'sineInOut' }).to(0.7, { scale: v3(1, 1, 1) }, { easing: 'sineInOut' }).union().repeatForever();
-            tween(this.dragToMatchText).to(0.5, { scale: v3(1, 1, 1) }, { easing: 'backOut' }).call(() => { this.bounceTween?.start(); }).start();
+            this.bounceTween = tween(this.dragToMatchText).to(0.7, {scale: v3(1.1, 1.1, 1.1)}, {easing: 'sineInOut'}).to(0.7, {scale: v3(1, 1, 1)}, {easing: 'sineInOut'}).union().repeatForever();
+            tween(this.dragToMatchText).to(0.5, {scale: v3(1, 1, 1)}, {easing: 'backOut'}).call(() => {
+                this.bounceTween?.start();
+            }).start();
         }
 
         this.isGameStarted = false;
@@ -116,7 +142,7 @@ export class GameManager extends Component {
         if (this.bwBackground) this.bwBackground.active = true;
         if (this.revealWave) this.revealWave.active = false;
         if (this.colorRevealMask) this.colorRevealMask.getComponent(UITransform)!.height = 0;
-        
+
         if (this.tutorialController) {
             this.isTutorialActive = true;
             if (this.tutorialSpotlightOverlay) this.tutorialSpotlightOverlay.active = false;
@@ -124,10 +150,10 @@ export class GameManager extends Component {
             this.scheduleOnce(this.tutorialCallback, 2.0);
         }
     }
-    
+
     private startTutorialSequence() {
         if (!this.isTutorialActive || !this.tutorialController) return;
-        const { startNode, endNode } = this.tutorialController;
+        const {startNode, endNode} = this.tutorialController;
         if (!startNode || !endNode) {
             console.error("Initial tutorial nodes not set in TutorialController!");
             return;
@@ -151,8 +177,8 @@ export class GameManager extends Component {
         if (!this.tutorialSpotlightOverlay) return;
         this.tutorialSpotlightOverlay.active = true;
         const overlayUIT = this.tutorialSpotlightOverlay.getComponent(UITransform);
-        if(!overlayUIT) return;
-        
+        if (!overlayUIT) return;
+
         const overlaySprite = this.tutorialSpotlightOverlay.getComponent(Sprite);
         if (overlaySprite) { // @ts-ignore
             this.savedEventBlocker = overlaySprite._eventBlocker; // @ts-ignore
@@ -175,17 +201,17 @@ export class GameManager extends Component {
         if (this.spotlightGlow1) this.spotlightGlow1.setPosition(startNode.position);
         if (this.spotlightGlow2) this.spotlightGlow2.setPosition(endNode.position);
     }
-    
+
     public notifyFirstInteraction(): void {
         this.resetIdleTimer();
         if (!this.isTutorialActive) {
             if (!this.isGameStarted) this.notifyGameStart();
             return;
         }
-        
+
         this.isTutorialActive = false;
         if (this.tutorialController) this.tutorialController.stopTutorial();
-        
+
         if (this.tutorialSpotlightOverlay && this.tutorialSpotlightOverlay.active) {
             this.tutorialSpotlightOverlay.active = false;
             const overlaySprite = this.tutorialSpotlightOverlay.getComponent(Sprite);
@@ -195,7 +221,7 @@ export class GameManager extends Component {
         }
 
         if (this.originalStartNodeParent && this.tutorialController) {
-            const { startNode, endNode } = this.tutorialController;
+            const {startNode, endNode} = this.tutorialController;
             if (startNode) {
                 startNode.setParent(this.originalStartNodeParent);
                 startNode.setPosition(this.originalStartNodePos);
@@ -207,38 +233,38 @@ export class GameManager extends Component {
             this.originalStartNodeParent = null;
             this.originalEndNodeParent = null;
         }
-        
+
         if (this.tutorialCallback) {
             this.unschedule(this.tutorialCallback);
             this.tutorialCallback = null;
         }
-        
+
         if (this.dragToMatchText) {
             if (this.bounceTween) this.bounceTween.stop();
             this.dragToMatchText.active = false;
         }
-        
+
         if (!this.isGameStarted) this.notifyGameStart();
     }
-    
+
     public notifyGameStart() {
         if (this.isGameStarted) return;
         this.isGameStarted = true;
         this.resetIdleTimer();
     }
-    
+
     private handleGameEnd(didWin: boolean) {
         if (this.isGameOver) return;
         this.isGameOver = true;
         this.isGameStarted = false;
-        
+
         if (this.tutorialController) this.tutorialController.stopTutorial();
-        
-        this.scheduleOnce(() => this.showEndGameOverlay(didWin), 3.5);
+
+        //  this.scheduleOnce(() => this.showEndGameOverlay(didWin), 3.5);
         this.scheduleOnce(() => {
             if (this.endGameOverlay) this.endGameOverlay.active = false;
             this.showCtaScreen();
-        }, 5.5);
+        }, 2);
 
         if (didWin && this.bwBackground && this.revealWave && this.colorRevealMask) {
             const backgroundTransform = this.bwBackground.getComponent(UITransform)!;
@@ -246,19 +272,19 @@ export class GameManager extends Component {
             const startY = targetHeight / 2;
             this.revealWave.setPosition(0, startY, 0);
             this.revealWave.active = true;
-            tween(this.revealWave).to(this.revealDuration, { position: v3(0, -startY, 0) }, { easing: 'cubicInOut' })
+            tween(this.revealWave).to(this.revealDuration, {position: v3(0, -startY, 0)}, {easing: 'cubicInOut'})
                 .call(() => {
                     this.revealWave!.active = false;
                     this.bwBackground!.active = false;
                 }).start();
             const maskTransform = this.colorRevealMask.getComponent(UITransform)!;
-            tween(maskTransform).to(this.revealDuration, { height: targetHeight }, { easing: 'cubicInOut' }).start();
+            tween(maskTransform).to(this.revealDuration, {height: targetHeight}, {easing: 'cubicInOut'}).start();
         }
     }
 
     private showEndGameOverlay(didWin: boolean) {
         if (!this.endGameOverlay || !this.endGameStatusLabel) return;
-        
+
         if (this.confettiPlayer) this.confettiPlayer.node.active = false;
         if (this.sadEmoji) this.sadEmoji.active = false;
         if (this.sadEmojiTween) {
@@ -282,7 +308,7 @@ export class GameManager extends Component {
                 this.sadEmoji.setRotationFromEuler(0, 0, 0);
 
                 tween(this.sadEmoji)
-                    .to(0.5, { scale: v3(1, 1, 1) }, { easing: 'backOut' })
+                    .to(0.5, {scale: v3(1, 1, 1)}, {easing: 'backOut'})
                     .call(() => {
                         if (this.tearParticlePrefab) {
                             const leftTear = instantiate(this.tearParticlePrefab);
@@ -295,11 +321,11 @@ export class GameManager extends Component {
                         }
 
                         this.sadEmojiTween = tween(this.sadEmoji!)
-                            .to(0.8, { scale: v3(1.05, 0.95, 1) }, { easing: 'sineInOut' })
-                            .to(0.8, { scale: v3(1, 1, 1) }, { easing: 'sineInOut' })
-                            .to(0.4, { angle: -5 }, { easing: 'sineInOut'})
-                            .to(0.8, { angle: 5 }, { easing: 'sineInOut'})
-                            .to(0.4, { angle: 0 }, { easing: 'sineInOut'})
+                            .to(0.8, {scale: v3(1.05, 0.95, 1)}, {easing: 'sineInOut'})
+                            .to(0.8, {scale: v3(1, 1, 1)}, {easing: 'sineInOut'})
+                            .to(0.4, {angle: -5}, {easing: 'sineInOut'})
+                            .to(0.8, {angle: 5}, {easing: 'sineInOut'})
+                            .to(0.4, {angle: 0}, {easing: 'sineInOut'})
                             .union().repeatForever().start();
                     })
                     .start();
@@ -323,13 +349,13 @@ export class GameManager extends Component {
         for (const catNode of this.catsContainer.children) {
             const catController = catNode.getComponent(CatController);
             if (catNode.active && catController) {
-                const { catType } = catController;
+                const {catType} = catController;
                 if (!availableCats.has(catType)) availableCats.set(catType, []);
                 availableCats.get(catType)!.push(catNode);
             }
         }
         for (const nodes of availableCats.values()) {
-            if (nodes.length >= 2) return { startNode: nodes[0], endNode: nodes[1] };
+            if (nodes.length >= 2) return {startNode: nodes[0], endNode: nodes[1]};
         }
         return null;
     }
@@ -357,25 +383,33 @@ export class GameManager extends Component {
     private performMerge(draggedCatNode: Node, staticCatNode: Node) {
         const draggedCatSprite = draggedCatNode.getComponent(Sprite)!;
         const draggedCatController = draggedCatNode.getComponent(CatController)!;
-        
+
         if (this.audioSource && draggedCatController.mergeSound) {
             this.audioSource.playOneShot(draggedCatController.mergeSound, 1.0);
         }
 
         if (this.starParticlePrefab) {
             const staticTransform = staticCatNode.getComponent(UITransform)!;
-            const worldPos = staticTransform.convertToWorldSpaceAR(v3(0,0,0));
+            const worldPos = staticTransform.convertToWorldSpaceAR(v3(0, 0, 0));
             const canvasTransform = this.node.parent!.getComponent(UITransform)!;
             const nodePos = canvasTransform.convertToNodeSpaceAR(worldPos);
             const stars = instantiate(this.starParticlePrefab);
-            this.node.parent!.addChild(stars); 
+            this.node.parent!.addChild(stars);
             stars.setPosition(nodePos);
         }
 
         draggedCatNode.setPosition(staticCatNode.getPosition());
         draggedCatSprite.spriteFrame = draggedCatController.coloredCat;
+
+// Punch scale effect
+        const originalScale = draggedCatNode.getScale();
+        tween(draggedCatNode)
+            .to(0.1, {scale: originalScale.clone().multiplyScalar(1.2)})
+            .to(0.1, {scale: originalScale})
+            .start();
+
         staticCatNode.destroy();
-        
+
         draggedCatNode.removeComponent(CatController);
         if (!this.mergedTypes.has(draggedCatController.catType)) {
             this.mergedTypes.add(draggedCatController.catType);
@@ -383,7 +417,7 @@ export class GameManager extends Component {
         }
         this.checkForWin();
     }
-    
+
     private updateProgressBar() {
         if (this.mergeProgressBar) {
             this.mergeProgressBar.progress = this.mergedTypes.size / this.totalMergeTypes;
