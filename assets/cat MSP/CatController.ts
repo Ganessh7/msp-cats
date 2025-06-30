@@ -6,16 +6,8 @@ const { ccclass, property } = _decorator;
 @ccclass('CatController')
 export class CatController extends Component {
 
-    @property(CCString)
-    public catType: string = "";
-
-    @property(SpriteFrame)
-    public coloredCat: SpriteFrame | null = null;
-
-    /**
-     * The sound to play when this cat is successfully merged.
-     * Assign this in the Cocos Creator editor for each cat prefab.
-     */
+    @property(CCString) public catType: string = "";
+    @property(SpriteFrame) public coloredCat: SpriteFrame | null = null;
     @property({ type: AudioClip, tooltip: "The sound to play when this cat is successfully merged." })
     public mergeSound: AudioClip | null = null;
 
@@ -26,7 +18,6 @@ export class CatController extends Component {
     onLoad() {
         this.originalPosition = this.node.getPosition().clone();
         this.registerEvents();
-
         const gameManagerNode = find("Canvas-001/GameManager"); 
         if (gameManagerNode) {
             this.gameManager = gameManagerNode.getComponent(GameManager);
@@ -56,16 +47,14 @@ export class CatController extends Component {
 
     onTouchStart(event: EventTouch) {
         if (!this.gameManager) return;
-        
-        this.gameManager.notifyGameStart();
         this.gameManager.notifyFirstInteraction();
-
         this.isDragging = true;
         this.node.setSiblingIndex(999);
     }
 
     onTouchMove(event: EventTouch) {
         if (!this.isDragging) return;
+        this.gameManager?.resetIdleTimer();
         const delta = event.getUIDelta();
         const pos = this.node.getPosition();
         this.node.setPosition(pos.x + delta.x, pos.y + delta.y, pos.z);
@@ -74,6 +63,7 @@ export class CatController extends Component {
     onTouchEnd(event: EventTouch) {
         if (!this.isDragging) return;
         this.isDragging = false;
+        this.gameManager?.resetIdleTimer();
         
         if (this.gameManager) {
             const mergeSuccess = this.gameManager.tryMerge(this.node);
